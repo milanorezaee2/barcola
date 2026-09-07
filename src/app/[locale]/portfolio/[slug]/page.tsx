@@ -133,7 +133,7 @@ export default async function PortfolioDetail({ params }: Props) {
           if (b.type === "quote" && b.text)
             return (
               <Reveal key={i} className="container-x">
-                <blockquote className="mx-auto max-w-3xl text-center font-display text-h1 italic text-balance">"{t(b.text, locale)}"</blockquote>
+                <blockquote className="mx-auto max-w-3xl text-center font-display text-h1 italic text-balance">&quot;{t(b.text, locale)}&quot;</blockquote>
               </Reveal>
             );
           return (
