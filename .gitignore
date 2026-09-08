@@ -36,6 +36,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /data/*.json
+/data/pgdata/
 
 # local agent/tooling artifacts & logs (never commit these)
 /dev.log

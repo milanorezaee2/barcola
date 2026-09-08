@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   if (tooManyAttempts(key)) {
     return NextResponse.json({ ok: false, error: "too_many_attempts" }, withNoStore({ status: 429 }));
   }
-  const result = verifyCredentials(body.email, body.password);
+  const result = await verifyCredentials(body.email, body.password);
   if (!result.ok) {
     recordFailure(key);
     return NextResponse.json({ ok: false, error: result.error }, withNoStore({ status: 401 }));

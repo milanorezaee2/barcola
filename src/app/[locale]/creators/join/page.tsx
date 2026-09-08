@@ -3,7 +3,7 @@ import Image from "next/image";
 import { BadgePercent, Globe2, Palette, ShieldCheck } from "lucide-react";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
-import { InquiryForm } from "@/components/ui/InquiryForm";
+import { ArtistApplyForm } from "@/components/marketplace/ArtistApplyForm";
 import { getSite } from "@/lib/data/queries";
 import { dictionaries } from "@/lib/i18n/dictionary";
 import type { Locale } from "@/lib/i18n/types";
@@ -51,7 +51,7 @@ export default async function JoinPage({ params }: { params: Promise<{ locale: L
             <h2 className="font-display text-h2">{fa ? "طراحانی که همراه ما هستند" : "Designers already with us"}</h2>
             <ul className="mt-6 space-y-3">{site.artists.map((a) => <li key={a.id} className="flex items-center gap-3"><span className="relative h-10 w-10 overflow-hidden rounded-full"><Image src={a.avatar} alt="" fill sizes="40px" className="object-cover" /></span><span><span className="block text-sm font-medium">{t(a.name, locale)}</span><span className="block text-caption text-foreground-secondary">{t(a.profession, locale)}</span></span></li>)}</ul>
           </div>
-          <div className="lg:col-span-7"><InquiryForm kind="creator" options={fa ? ["طراح سطح", "تصویرگر", "طراح گرافیک", "هنرمند سنتی", "استودیو"] : ["Surface designer", "Illustrator", "Graphic designer", "Traditional artist", "Studio"]} /></div>
+          <div className="lg:col-span-7"><ArtistApplyForm options={fa ? ["طراح سطح", "تصویرگر", "طراح گرافیک", "هنرمند سنتی", "استودیو"] : ["Surface designer", "Illustrator", "Graphic designer", "Traditional artist", "Studio"]} /></div>
         </div>
       </section>
     </>

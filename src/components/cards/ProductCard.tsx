@@ -2,15 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Eye } from "lucide-react";
+import { ArrowUpRight, Eye } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLocale } from "@/components/providers/AppProviders";
 import { Badge, Sku } from "@/components/ui/Badge";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { CineModal, CineModalHero, CineModalRow } from "@/components/ui/CineModal";
 import { AddToCartButton, FavoriteButton } from "@/components/product/Actions";
 import { ColorSwatches } from "@/components/product/ColorSwatches";
 import { QuickView } from "@/components/product/QuickView";
-import { useHoverCard } from "@/components/ui/HoverCard";
+import { useCinemaModal } from "@/hooks/useCinemaModal";
 import { cn, formatPrice, href, t } from "@/lib/utils";
 import type { Artist, Category, Pattern, Product } from "@/lib/types";
 
@@ -30,7 +31,7 @@ export function ProductCard({ product, variant = "default", className, priority 
   const { locale, dict } = useLocale();
   const { colorId, setColorId, color } = useProductColor(product);
   const [quick, setQuick] = useState(false);
-  const { onMouseEnter, onMouseLeave, onClick, portal } = useHoverCard({ kind: "product", product });
+  const cine = useCinemaModal();
   const url = href(locale, `/shop/${product.slug}`);
   const siteOwned = !product.artistId;
   const out = color.stock <= 0;
@@ -38,38 +39,42 @@ export function ProductCard({ product, variant = "default", className, priority 
 
   if (variant === "row") {
     return (
-      <>
-        <SpotlightCard as="article" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onClick} className={cn("group flex gap-4 rounded-lg border border-border bg-surface p-3 transition-shadow hover:shadow-medium cursor-pointer", className)}>
-          <Link href={url} className="relative h-28 w-24 shrink-0 overflow-hidden rounded-md bg-background-secondary">
-            <Image key={color.image} src={color.image} alt={t(product.title, locale)} fill sizes="96px" className="img-zoom object-cover anim-scale-fade" />
-          </Link>
-          <div className="flex min-w-0 flex-1 flex-col">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <Link href={url} className="block truncate text-[15px] font-medium text-foreground hover:text-accent">{t(product.title, locale)}</Link>
-                <div className="mt-1 flex items-center gap-2"><Sku value={product.sku} />{siteOwned ? <Badge tone="accent">{dict.common.siteExclusive}</Badge> : <Badge tone="blue">{dict.common.artistProduct}</Badge>}</div>
-              </div>
-              <span className="shrink-0 text-sm font-semibold tabular">{formatPrice(product.price, locale)}</span>
+      <SpotlightCard as="article" className={cn("group flex gap-4 rounded-xl border border-border bg-surface p-3 transition-shadow hover:shadow-medium", className)}>
+        <Link href={url} className="relative h-28 w-24 shrink-0 overflow-hidden rounded-md bg-background-secondary">
+          <Image key={color.image} src={color.image} alt={t(product.title, locale)} fill sizes="96px" className="img-zoom object-cover anim-scale-fade" />
+        </Link>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <Link href={url} className="block truncate text-[15px] font-medium text-foreground hover:text-accent">{t(product.title, locale)}</Link>
+              <div className="mt-1 flex items-center gap-2"><Sku value={product.sku} />{siteOwned ? <Badge tone="accent">{dict.common.siteExclusive}</Badge> : <Badge tone="blue">{dict.common.artistProduct}</Badge>}</div>
             </div>
-            <p className="mt-1.5 line-clamp-1 text-caption text-foreground-secondary">{product.specs.map((s) => `${t(s.label, locale)}: ${t(s.value, locale)}`).join(" · ")}</p>
-            <div className="mt-auto flex items-center justify-between gap-3 pt-2">
-              <div className="flex items-center gap-2">
-                <ColorSwatches options={swatches} value={colorId} onChange={setColorId} size="sm" label={dict.common.color} />
-                <span className="text-caption text-muted">{t(color.name, locale)}</span>
-              </div>
-              <AddToCartButton variant="icon" disabled={out} line={{ kind: "product", id: product.id, sku: product.sku, title: t(product.title, locale), image: color.image, price: product.price, colorName: t(color.name, locale), colorHex: color.hex, href: url }} />
-            </div>
+            <span className="shrink-0 text-sm font-semibold tabular">{formatPrice(product.price, locale)}</span>
           </div>
-        </SpotlightCard>
-        {portal}
-      </>
+          <p className="mt-1.5 line-clamp-1 text-caption text-foreground-secondary">{product.specs.map((s) => `${t(s.label, locale)}: ${t(s.value, locale)}`).join(" · ")}</p>
+          <div className="mt-auto flex items-center justify-between gap-3 pt-2">
+            <div className="flex items-center gap-2">
+              <ColorSwatches options={swatches} value={colorId} onChange={setColorId} size="sm" label={dict.common.color} />
+              <span className="text-caption text-muted">{t(color.name, locale)}</span>
+            </div>
+            <AddToCartButton variant="icon" disabled={out} line={{ kind: "product", id: product.id, sku: product.sku, title: t(product.title, locale), image: color.image, price: product.price, colorName: t(color.name, locale), colorHex: color.hex, href: url }} />
+          </div>
+        </div>
+      </SpotlightCard>
     );
   }
 
   return (
     <>
-      <SpotlightCard as="article" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onClick} className={cn("group relative flex flex-col rounded-lg", className)}>
-        <Link href={url} className="relative block overflow-hidden rounded-lg bg-background-secondary" aria-label={t(product.title, locale)}>
+      <SpotlightCard
+        as="article"
+        {...cine.cardBind}
+        className={cn(
+          "group relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-medium",
+          className,
+        )}
+      >
+        <Link href={url} className="relative block overflow-hidden bg-background-secondary" aria-label={t(product.title, locale)}>
           <div className={cn("relative w-full", variant === "large" ? "aspect-[4/5]" : "aspect-square")}>
             <Image
               key={color.image}
@@ -98,7 +103,7 @@ export function ProductCard({ product, variant = "default", className, priority 
           </div>
         </Link>
 
-        <div className="flex flex-col gap-2 pt-3.5">
+        <div className={cn("flex flex-col gap-2 p-3.5", variant === "large" && "p-5")}>
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <Link href={url} className={cn("block truncate font-medium text-foreground transition-colors hover:text-accent", variant === "large" ? "text-h4" : "text-[15px]")}>{t(product.title, locale)}</Link>
@@ -130,7 +135,63 @@ export function ProductCard({ product, variant = "default", className, priority 
           </div>
         </div>
       </SpotlightCard>
-      {portal}
+
+      <CineModal open={cine.open} onClose={cine.close} modalBind={cine.modalBind} label={t(product.title, locale)} className="md:grid md:grid-cols-2">
+        <CineModalHero className="aspect-[4/5] md:aspect-auto md:h-full">
+          <Image key={color.image} src={color.image} alt={t(product.title, locale)} fill sizes="(max-width:768px) 100vw, 50vw" className="object-cover" />
+          <div className="absolute inset-0 vignette opacity-60 md:hidden" />
+        </CineModalHero>
+        <div className="flex flex-col p-6 md:p-8">
+          <CineModalRow step={0} className="flex flex-wrap gap-1.5">
+            {siteOwned ? <Badge tone="accent">{dict.common.siteExclusive}</Badge> : <Badge tone="blue">{dict.common.artistProduct}</Badge>}
+            {product.isNew && <Badge>{dict.common.new}</Badge>}
+            {product.bestSeller && <Badge>{dict.common.bestSeller}</Badge>}
+          </CineModalRow>
+          <CineModalRow step={1}>
+            <h2 className="mt-3 font-display text-h2">{t(product.title, locale)}</h2>
+            <p className="mt-1 text-body-sm text-foreground-secondary">
+              {product.artist ? t(product.artist.name, locale) : dict.brand}
+              {product.category && <span className="text-muted"> · {t(product.category.name, locale)}</span>}
+            </p>
+          </CineModalRow>
+          <CineModalRow step={2}>
+            <p className="mt-4 text-body-sm text-foreground-secondary">{t(product.description, locale)}</p>
+          </CineModalRow>
+          <CineModalRow step={3} className="mt-4 flex items-center gap-3">
+            <span className="text-h3 font-semibold tabular text-foreground">{formatPrice(product.price, locale)}</span>
+            {product.compareAt && <span className="text-body-sm tabular text-muted line-through">{formatPrice(product.compareAt, locale)}</span>}
+          </CineModalRow>
+          <CineModalRow step={4} className="mt-4 flex items-center gap-3">
+            <ColorSwatches options={swatches} value={colorId} onChange={setColorId} size="lg" label={dict.common.color} />
+            <span className="text-caption text-foreground-secondary">{t(color.name, locale)}</span>
+          </CineModalRow>
+          {product.specs.length > 0 && (
+            <CineModalRow step={5}>
+              <dl className="mt-5 grid grid-cols-3 gap-x-2 gap-y-3 rounded-lg bg-background-secondary px-4 py-3">
+                {product.specs.slice(0, 3).map((s) => (
+                  <div key={t(s.label, "en")}>
+                    <dt className="text-[10px] uppercase tracking-wider text-muted">{t(s.label, locale)}</dt>
+                    <dd className="mt-0.5 text-caption font-medium text-foreground">{t(s.value, locale)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </CineModalRow>
+          )}
+          <CineModalRow step={6} className="mt-4 flex items-center gap-1.5">
+            <span className={cn("h-1.5 w-1.5 rounded-full", out ? "bg-error" : color.stock <= 4 ? "bg-warning" : "bg-success")} />
+            <span className={cn("text-caption", out ? "text-error" : color.stock <= 4 ? "text-warning" : "text-muted")}>
+              {out ? dict.common.outOfStock : color.stock <= 4 ? dict.common.lowStock : dict.common.inStock}
+            </span>
+          </CineModalRow>
+          <CineModalRow step={7} className="mt-6 flex items-center gap-2.5">
+            <AddToCartButton disabled={out} className="h-11 flex-1" line={{ kind: "product", id: product.id, sku: product.sku, title: t(product.title, locale), image: color.image, price: product.price, colorName: t(color.name, locale), colorHex: color.hex, href: url }} />
+            <Link href={url} className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:border-foreground hover:bg-surface">
+              <ArrowUpRight className="h-4 w-4 rtl-flip" />
+            </Link>
+          </CineModalRow>
+        </div>
+      </CineModal>
+
       {quick && <QuickView open={quick} onClose={() => setQuick(false)} item={{ kind: "product", product }} />}
     </>
   );

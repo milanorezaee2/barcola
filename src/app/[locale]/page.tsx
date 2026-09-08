@@ -51,20 +51,22 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
   return (
     <>
       {on("hero") && <Hero hero={site.hero} patterns={heroPatterns} stats={{ patterns: site.patterns.length * 40, artists: site.artists.length * 30, projects: site.portfolios.length * 20 }} />}
-      {on("discovery") && <DiscoverySection patterns={patterns.filter((p) => p.featured)} categories={featuredCats} />}
-      {on("trending") && <PatternRail id="trending" eyebrow={d.common.trending} title={d.home.trendingTitle} description={d.home.trendingDesc} patterns={patterns.filter((p) => p.trending)} hrefPath="/patterns?sort=trending" tone="secondary" />}
-      {on("bestSellers") && <BestSellersSection patterns={patterns.filter((p) => p.bestSeller)} products={products.filter((p) => p.bestSeller)} />}
-      {on("newPatterns") && <PatternRail id="new" eyebrow={d.common.new} title={d.home.newTitle} description={d.home.newDesc} patterns={patterns.filter((p) => p.isNew)} hrefPath="/patterns?sort=new" />}
-      {on("artists") && <ArtistsSection artists={artists} />}
-      {on("portfolios") && <PortfoliosSection items={portfolios.filter((p) => p.featured)} eyebrow={d.nav.portfolio} title={d.home.portfolioTitle} description={d.home.portfolioDesc} hrefPath="/portfolio" />}
-      {on("styles") && <StylesSection categories={featuredCats} counts={styleCounts} />}
-      {on("spaces") && <SpacesSection spaces={site.spaces.slice().sort((a, b) => a.order - b.order)} />}
-      {on("exclusive") && <ExclusiveSection products={products.filter((p) => !p.artistId && p.featured)} />}
-      {on("projects") && <PortfoliosSection items={portfolios.filter((p) => p.isProject)} eyebrow={d.nav.projects} title={d.home.projectsTitle} description={d.home.projectsDesc} hrefPath="/projects" />}
-      {on("education") && <EducationSection items={[...education.filter((e) => e.featured), ...education.filter((e) => !e.featured && e.popular)]} />}
-      {(on("b2b") || on("custom")) && <B2BCustomSection image1={site.portfolios[0]?.cover ?? site.hero.image} image2={site.portfolios[3]?.cover ?? site.hero.image} />}
-      {on("stories") && <StoriesSection stories={site.stories} artists={site.artists} />}
-      {on("newsletter") && <NewsletterSection />}
+      <div className="flex flex-col gap-14 py-14 md:gap-20 md:py-20 lg:gap-24 lg:py-24">
+        {on("discovery") && <DiscoverySection patterns={patterns.filter((p) => p.featured)} categories={featuredCats} />}
+        {on("trending") && <PatternRail id="trending" eyebrow={d.common.trending} title={d.home.trendingTitle} description={d.home.trendingDesc} patterns={patterns.filter((p) => p.trending)} hrefPath="/patterns?sort=trending" tone="secondary" />}
+        {on("bestSellers") && <BestSellersSection patterns={patterns.filter((p) => p.bestSeller)} products={products.filter((p) => p.bestSeller)} />}
+        {on("newPatterns") && <PatternRail id="new" eyebrow={d.common.new} title={d.home.newTitle} description={d.home.newDesc} patterns={patterns.filter((p) => p.isNew)} hrefPath="/patterns?sort=new" tone="secondary" />}
+        {on("artists") && <ArtistsSection artists={artists} />}
+        {on("portfolios") && <PortfoliosSection items={portfolios.filter((p) => p.featured)} eyebrow={d.nav.portfolio} title={d.home.portfolioTitle} description={d.home.portfolioDesc} hrefPath="/portfolio" />}
+        {on("styles") && <StylesSection categories={featuredCats} counts={styleCounts} />}
+        {on("spaces") && <SpacesSection spaces={site.spaces.slice().sort((a, b) => a.order - b.order)} />}
+        {on("exclusive") && <ExclusiveSection products={products.filter((p) => !p.artistId && p.featured)} />}
+        {on("projects") && <PortfoliosSection items={portfolios.filter((p) => p.isProject)} eyebrow={d.nav.projects} title={d.home.projectsTitle} description={d.home.projectsDesc} hrefPath="/projects" />}
+        {on("education") && <EducationSection items={[...education.filter((e) => e.featured), ...education.filter((e) => !e.featured && e.popular)]} tone="secondary" />}
+        {(on("b2b") || on("custom")) && <B2BCustomSection image1={site.portfolios[0]?.cover ?? site.hero.image} image2={site.portfolios[3]?.cover ?? site.hero.image} />}
+        {on("stories") && <StoriesSection stories={site.stories} artists={site.artists} />}
+        {on("newsletter") && <NewsletterSection />}
+      </div>
     </>
   );
 }

@@ -21,7 +21,7 @@ export function Footer() {
   const cols = [
     { title: dict.footer.discover, links: [[dict.nav.patterns, "/patterns"], [dict.nav.products, "/shop"], [dict.nav.artists, "/artists"], [dict.nav.portfolio, "/portfolio"], [dict.nav.education, "/academy"], [dict.nav.collections, "/collections"]] },
     { title: dict.footer.company, links: [[dict.nav.about, "/about"], [dict.nav.projects, "/projects"], [dict.nav.custom, "/custom"], [dict.nav.stories, "/stories"], [dict.nav.becomeCreator, "/creators/join"]] },
-    { title: dict.footer.support, links: [[dict.footer.faq, "/faq"], [dict.footer.returns, "/returns"], [dict.nav.contact, "/contact"], [dict.nav.account, user ? "/account" : "/login"], ...(user?.role === "admin" ? [[dict.nav.admin, "/admin"]] : [])] },
+    { title: dict.footer.support, links: [[dict.footer.faq, "/faq"], [dict.footer.returns, "/returns"], [dict.nav.contact, "/contact"], [dict.nav.account, user ? "/account" : "/login"], ...(user?.role === "admin" ? [[dict.nav.admin, "/admin"]] : []), ...(user?.role === "artist" ? [[dict.nav.studio, "/studio"]] : [])] },
   ];
 
   return (
