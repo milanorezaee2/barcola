@@ -85,9 +85,12 @@ export function useFavorites() {
 /* Auth (lightweight, local)                                            */
 /* ------------------------------------------------------------------ */
 export interface User {
+  id?: string | null;
   name: string;
   email: string;
-  role: "user" | "admin";
+  role: "customer" | "artist" | "admin";
+  artistId?: string;
+  artistStatus?: "pending" | "approved" | "rejected" | "suspended";
 }
 interface AuthCtx {
   user: User | null;
@@ -208,8 +211,8 @@ export function AppProviders({ locale, children }: { locale: Locale; children: R
     };
   }, [favArr, setFavArr]);
 
-  /* auth — server session (HttpOnly cookie) for admins, local session for regular users */
-  const [localUser, setLocalUser] = useLocalState<User | null>("ra-user", null);
+  /* auth — every role (customer/artist/admin) is now a real server session (HttpOnly cookie)
+     backed by the marketplace database; there is no more client-only/local account state. */
   const [serverUser, setServerUser] = useState<User | null | undefined>(undefined);
   /**
    * Session version counter. Every write we make to the session ourselves (login/logout) bumps it,
@@ -241,14 +244,13 @@ export function AppProviders({ locale, children }: { locale: Locale; children: R
     };
   }, []);
 
-  const user = serverUser === undefined ? (localUser?.role === "admin" ? null : localUser) : (serverUser ?? (localUser?.role === "admin" ? null : localUser));
+  const user = serverUser ?? null;
   const authValue = useMemo<AuthCtx>(
     () => ({
       user,
       ready: serverUser !== undefined,
       login: async (email, password) => {
         if (!email.includes("@") || password.length < 4) return { ok: false, error: "invalid" };
-        // Try a real admin session first
         try {
           const r = await fetch("/api/auth/login", {
             ...SESSION_FETCH,
@@ -262,26 +264,36 @@ export function AppProviders({ locale, children }: { locale: Locale; children: R
             commitServerUser(d.user);
             return { ok: true };
           }
-          if (email.toLowerCase().startsWith("admin@")) return { ok: false, error: d.error ?? "invalid" };
+          return { ok: false, error: d.error ?? "invalid" };
         } catch {
-          if (email.toLowerCase().startsWith("admin@")) return { ok: false, error: "network" };
+          return { ok: false, error: "network" };
         }
-        // Regular customer session (local-first; wire to your user backend later)
-        setLocalUser({ name: email.split("@")[0], email, role: "user" });
-        return { ok: true };
       },
       signup: async (name, email, password) => {
-        if (!name || !email.includes("@") || password.length < 4) return { ok: false, error: "invalid" };
-        setLocalUser({ name, email, role: "user" });
-        return { ok: true };
+        if (!name || !email.includes("@") || password.length < 6) return { ok: false, error: "invalid" };
+        try {
+          const r = await fetch("/api/auth/signup", {
+            ...SESSION_FETCH,
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ name, email, password }),
+          });
+          const d = (await r.json()) as { ok: boolean; user?: User; error?: string };
+          if (r.ok && d.ok && d.user) {
+            commitServerUser(d.user);
+            return { ok: true };
+          }
+          return { ok: false, error: d.error ?? "invalid" };
+        } catch {
+          return { ok: false, error: "network" };
+        }
       },
       logout: () => {
-        setLocalUser(null);
         commitServerUser(null);
         fetch("/api/auth/logout", { ...SESSION_FETCH, method: "POST" }).catch(() => undefined);
       },
     }),
-    [user, serverUser, setLocalUser, commitServerUser],
+    [user, serverUser, commitServerUser],
   );
 
   /* search */

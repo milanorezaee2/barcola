@@ -43,7 +43,7 @@ export function Carousel({ children, className, itemClassName = "w-[78vw] xs:w-[
 
   return (
     <div className={cn("relative", className)}>
-      <div ref={ref} className="no-scrollbar scroll-snap-x -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 md:-mx-0 md:px-0">
+      <div ref={ref} className="no-scrollbar scroll-snap-x flex gap-4 overflow-x-auto pb-2 -mx-1 px-1">
         {children.map((c, i) => (
           <div key={i} className={cn("snap-item shrink-0", itemClassName)}>{c}</div>
         ))}

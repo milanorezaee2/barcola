@@ -20,6 +20,7 @@ const fa = {
     contact: "تماس",
     account: "حساب کاربری",
     admin: "مدیریت",
+    studio: "استودیوی هنرمند",
     search: "جستجو",
     cart: "سبد خرید",
     menu: "منو",
@@ -215,6 +216,19 @@ const fa = {
       category: "دسته",
     },
   },
+  auth: {
+    forgotPassword: "رمز عبور را فراموش کرده‌اید؟",
+    resetPassword: "بازیابی رمز عبور",
+    resetPasswordDesc: "ایمیل حساب خود را وارد کنید تا لینک بازیابی رمز عبور برایتان ساخته شود.",
+    sendResetLink: "ارسال لینک بازیابی",
+    backToLogin: "بازگشت به ورود",
+    resetLinkSentTitle: "لینک بازیابی ساخته شد",
+    resetLinkSentDesc: "این پلتفرم سرویس ایمیل واقعی ندارد؛ برای آزمایش، همین لینک زیر را باز کنید تا رمز جدید تنظیم شود.",
+    newPassword: "رمز عبور جدید",
+    setNewPassword: "تنظیم رمز جدید",
+    passwordResetSuccess: "رمز عبور با موفقیت تغییر کرد. اکنون وارد شوید.",
+    invalidResetLink: "این لینک بازیابی نامعتبر یا منقضی شده است.",
+  },
 } as const;
 
 type Dict = {
@@ -225,6 +239,7 @@ type Dict = {
   home: Record<keyof typeof fa.home, string>;
   footer: Record<keyof typeof fa.footer, string>;
   search: { placeholder: string; hint: string; recent: string; noResults: string; types: Record<keyof typeof fa.search.types, string> };
+  auth: Record<keyof typeof fa.auth, string>;
 };
 
 const en: Dict = {
@@ -247,6 +262,7 @@ const en: Dict = {
     contact: "Contact",
     account: "Account",
     admin: "Admin",
+    studio: "Artist Studio",
     search: "Search",
     cart: "Cart",
     menu: "Menu",
@@ -441,6 +457,19 @@ const en: Dict = {
       education: "Learning",
       category: "Category",
     },
+  },
+  auth: {
+    forgotPassword: "Forgot your password?",
+    resetPassword: "Reset password",
+    resetPasswordDesc: "Enter your account email and we'll generate a password reset link.",
+    sendResetLink: "Send reset link",
+    backToLogin: "Back to sign in",
+    resetLinkSentTitle: "Reset link generated",
+    resetLinkSentDesc: "This platform has no real email service — for testing, open the link below to set a new password.",
+    newPassword: "New password",
+    setNewPassword: "Set new password",
+    passwordResetSuccess: "Password changed successfully. Please sign in.",
+    invalidResetLink: "This reset link is invalid or has expired.",
   },
 };
 

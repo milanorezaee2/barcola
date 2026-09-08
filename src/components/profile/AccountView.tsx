@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Heart, LogOut, Package, Settings, ShieldCheck } from "lucide-react";
+import { Heart, LogOut, Package, Palette, Settings, ShieldCheck } from "lucide-react";
 import { useAuth, useCart, useFavorites, useLocale } from "@/components/providers/AppProviders";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/States";
@@ -34,6 +34,7 @@ export function AccountView() {
         </div>
         <div className="flex gap-2">
           {user.role === "admin" && <Button href={href(locale, "/admin")} variant="outline"><ShieldCheck className="h-4 w-4" />{dict.nav.admin}</Button>}
+          {user.role === "artist" && <Button href={href(locale, "/studio")} variant="outline"><Palette className="h-4 w-4" />{dict.nav.studio}</Button>}
           <Button variant="ghost" onClick={() => { logout(); router.push(href(locale, "/")); }}><LogOut className="h-4 w-4" />{fa ? "خروج" : "Sign out"}</Button>
         </div>
       </div>

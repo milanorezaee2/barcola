@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Eye } from "lucide-react";
+import { ArrowUpRight, Eye } from "lucide-react";
 import { useState } from "react";
 import { useLocale } from "@/components/providers/AppProviders";
 import { Badge, Sku } from "@/components/ui/Badge";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { CineModal, CineModalHero, CineModalRow } from "@/components/ui/CineModal";
 import { AddToCartButton, FavoriteButton } from "@/components/product/Actions";
-import { useHoverCard } from "@/components/ui/HoverCard";
+import { useCinemaModal } from "@/hooks/useCinemaModal";
 import { cn, formatPrice, href, t } from "@/lib/utils";
 import type { Artist, Category, Pattern } from "@/lib/types";
 import { QuickView } from "@/components/product/QuickView";
@@ -23,14 +24,21 @@ type Variant = "default" | "large" | "wide" | "compact";
 export function PatternCard({ pattern, variant = "default", priority, className }: { pattern: PatternCardData; variant?: Variant; priority?: boolean; className?: string }) {
   const { locale, dict } = useLocale();
   const [quick, setQuick] = useState(false);
-  const { onMouseEnter, onMouseLeave, onClick, portal } = useHoverCard({ kind: "pattern", pattern });
+  const cine = useCinemaModal();
   const url = href(locale, `/patterns/${pattern.slug}`);
   const ratio = variant === "large" ? "aspect-[4/5]" : variant === "wide" ? "aspect-[16/10]" : variant === "compact" ? "aspect-square" : "aspect-[4/5]";
 
   return (
     <>
-      <SpotlightCard as="article" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onClick} className={cn("group relative flex flex-col rounded-lg", className)}>
-        <Link href={url} className="relative block overflow-hidden rounded-lg bg-background-secondary" aria-label={t(pattern.title, locale)}>
+      <SpotlightCard
+        as="article"
+        {...cine.cardBind}
+        className={cn(
+          "group relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-medium",
+          className,
+        )}
+      >
+        <Link href={url} className="relative block overflow-hidden bg-background-secondary" aria-label={t(pattern.title, locale)}>
           <div className={cn("relative w-full", ratio)}>
             <Image
               src={pattern.image}
@@ -78,7 +86,7 @@ export function PatternCard({ pattern, variant = "default", priority, className 
           )}
         </Link>
 
-        <div className={cn("flex flex-col gap-1.5 pt-3.5", variant === "large" && "pt-5")}>
+        <div className={cn("flex flex-col gap-1.5 p-3.5", variant === "large" && "p-5")}>
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <Link href={url} className={cn("block truncate font-medium text-foreground hover:text-accent transition-colors", variant === "large" ? "text-h4" : "text-[15px]")}>
@@ -97,7 +105,7 @@ export function PatternCard({ pattern, variant = "default", priority, className 
             </div>
             <span className="shrink-0 text-sm font-semibold tabular text-foreground">{formatPrice(pattern.price, locale)}</span>
           </div>
-          <div className="flex items-center justify-between gap-2 pt-1">
+          <div className="flex items-center justify-between gap-2 border-t border-border pt-2.5">
             <Sku value={pattern.sku} />
             {variant !== "compact" && (
               <span className="truncate text-caption text-muted" dir="auto">
@@ -107,7 +115,54 @@ export function PatternCard({ pattern, variant = "default", priority, className 
           </div>
         </div>
       </SpotlightCard>
-      {portal}
+
+      <CineModal open={cine.open} onClose={cine.close} modalBind={cine.modalBind} label={t(pattern.title, locale)} className="md:grid md:grid-cols-2">
+        <CineModalHero className="aspect-[4/5] md:aspect-auto md:h-full">
+          <Image src={pattern.image} alt={t(pattern.title, locale)} fill sizes="(max-width:768px) 100vw, 50vw" className="object-cover" />
+          <div className="absolute inset-0 vignette opacity-60 md:hidden" />
+        </CineModalHero>
+        <div className="flex flex-col p-6 md:p-8">
+          <CineModalRow step={0} className="flex flex-wrap gap-1.5">
+            {pattern.isNew && <Badge>{dict.common.new}</Badge>}
+            {pattern.trending && <Badge>{dict.common.trending}</Badge>}
+            {pattern.bestSeller && !pattern.trending && <Badge>{dict.common.bestSeller}</Badge>}
+            {!pattern.artistId && <Badge tone="accent">{dict.common.sitePattern}</Badge>}
+          </CineModalRow>
+          <CineModalRow step={1}>
+            <h2 className="mt-3 font-display text-h2">{t(pattern.title, locale)}</h2>
+            <p className="mt-1 text-body-sm text-foreground-secondary">
+              {pattern.artist ? t(pattern.artist.name, locale) : dict.brand}
+              {pattern.category && <span className="text-muted"> · {t(pattern.category.name, locale)}</span>}
+            </p>
+          </CineModalRow>
+          <CineModalRow step={2}>
+            <p className="mt-4 text-body-sm text-foreground-secondary">{t(pattern.description, locale)}</p>
+          </CineModalRow>
+          <CineModalRow step={3} className="mt-4 text-h3 font-semibold tabular text-foreground">
+            {formatPrice(pattern.price, locale)}
+          </CineModalRow>
+          <CineModalRow step={4}>
+            <dl className="mt-5 grid grid-cols-2 gap-3 rounded-lg bg-background-secondary px-4 py-3 text-sm">
+              <div><dt className="text-caption text-muted">{dict.common.repeat}</dt><dd className="mt-0.5 font-medium text-foreground">{t(pattern.specs.repeat, locale)}</dd></div>
+              <div><dt className="text-caption text-muted">{dict.common.dpi}</dt><dd className="mt-0.5 font-medium text-foreground">{pattern.specs.dpi}</dd></div>
+              <div><dt className="text-caption text-muted">{dict.common.formats}</dt><dd className="mt-0.5 font-medium text-foreground">{pattern.specs.formats}</dd></div>
+              <div><dt className="text-caption text-muted">{dict.common.colors}</dt><dd className="mt-0.5 font-medium text-foreground">{pattern.specs.colors}</dd></div>
+            </dl>
+          </CineModalRow>
+          <CineModalRow step={5} className="mt-4 flex gap-1.5">
+            {pattern.palette.slice(0, 7).map((c) => (
+              <span key={c} className="h-5 w-5 rounded-full ring-1 ring-border" style={{ background: c }} />
+            ))}
+          </CineModalRow>
+          <CineModalRow step={6} className="mt-6 flex items-center gap-2.5">
+            <AddToCartButton className="h-11 flex-1" line={{ kind: "pattern", id: pattern.id, sku: pattern.sku, title: t(pattern.title, locale), image: pattern.image, price: pattern.price, href: url }} />
+            <Link href={url} className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border text-foreground transition-colors hover:border-foreground hover:bg-surface">
+              <ArrowUpRight className="h-4 w-4 rtl-flip" />
+            </Link>
+          </CineModalRow>
+        </div>
+      </CineModal>
+
       {quick && <QuickView open={quick} onClose={() => setQuick(false)} item={{ kind: "pattern", pattern }} />}
     </>
   );

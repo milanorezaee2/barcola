@@ -14,7 +14,7 @@ import { cn, href, slugify, t } from "@/lib/utils";
 import type { Banner, Category, HeroContent, HomeSectionKey, SeoMeta, SiteContent } from "@/lib/types";
 import type { Localized } from "@/lib/i18n/types";
 
-type Section = "home" | "hero" | "categories" | "patterns" | "products" | "artists" | "portfolios" | "education" | "banners" | "seo";
+type Section = "home" | "hero" | "categories" | "patterns" | "products" | "artists" | "portfolios" | "education" | "banners" | "seo" | "artistApplications" | "listingApprovals";
 
 const SECTION_LABELS: Record<HomeSectionKey, string> = {
   hero: "Hero", discovery: "Pattern Discovery", trending: "Trending Patterns", bestSellers: "Best Sellers", newPatterns: "New Patterns", artists: "Featured Artists", portfolios: "Featured Portfolios", styles: "Browse by Style", spaces: "Browse by Space", exclusive: "Exclusive Collection", projects: "Featured Projects", education: "Academy", b2b: "B2B", custom: "Custom Production", stories: "Artist Stories", newsletter: "Newsletter",
@@ -121,6 +121,7 @@ export function AdminApp() {
   }
 
   const nav: { id: Section; label: string }[] = [
+    { id: "artistApplications", label: "Artist Applications" }, { id: "listingApprovals", label: "Listing Approvals" },
     { id: "home", label: "Homepage Sections" }, { id: "hero", label: "Hero" }, { id: "categories", label: "Categories / Styles" }, { id: "patterns", label: "Patterns" }, { id: "products", label: "Site Products" }, { id: "artists", label: "Artists" }, { id: "portfolios", label: "Portfolios" }, { id: "education", label: "Education" }, { id: "banners", label: "Banners" }, { id: "seo", label: "SEO Metadata" },
   ];
 
@@ -165,6 +166,10 @@ export function AdminApp() {
             </div>
           ) : loadError === "error" ? (
             <ErrorState message="Could not reach the admin API. Check your connection and retry." onRetry={() => void load()} />
+          ) : section === "artistApplications" ? (
+            <div key={section} className="anim-fade-up"><ArtistApplications /></div>
+          ) : section === "listingApprovals" ? (
+            <div key={section} className="anim-fade-up"><ListingApprovals /></div>
           ) : !data ? (
             <div className="space-y-3"><Skeleton className="h-10 w-1/2" /><Skeleton className="h-40" /><Skeleton className="h-40" /></div>
           ) : (
@@ -347,6 +352,137 @@ function SeoEditor({ seo, onChange }: { seo: SeoMeta[]; onChange: (s: SeoMeta[])
           </li>
         ))}
       </ul>
+    </Card>
+  );
+}
+
+/* ---------------- Artist applications (real DB moderation queue) ---------------- */
+type ArtistApplicationRow = {
+  profile: { id: string; slug: string; displayNameFa: string; displayNameEn: string; professionFa: string; professionEn: string; bioFa: string; bioEn: string; commissionPct: string; status: "pending" | "approved" | "rejected" | "suspended"; appliedAt: string };
+  user: { id: string; name: string; email: string };
+};
+
+function ArtistApplications() {
+  const [rows, setRows] = useState<ArtistApplicationRow[] | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setErr(null);
+    try {
+      const r = await fetch("/api/admin/artists", { ...SESSION_FETCH });
+      const d = (await r.json()) as { ok: boolean; applications?: ArtistApplicationRow[] };
+      if (!r.ok || !d.ok) throw new Error();
+      setRows(d.applications ?? []);
+    } catch {
+      setErr("Could not load artist applications.");
+    }
+  }, []);
+  useEffect(() => { void load(); }, [load]);
+
+  const decide = async (id: string, status: "approved" | "rejected" | "suspended") => {
+    setBusyId(id);
+    try {
+      const r = await fetch(`/api/admin/artists/${id}`, { ...SESSION_FETCH, method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ status }) });
+      if (!r.ok) throw new Error();
+      await load();
+    } catch {
+      setErr("Action failed.");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  if (err) return <ErrorState message={err} onRetry={load} />;
+  if (!rows) return <div className="space-y-3"><Skeleton className="h-10 w-1/2" /><Skeleton className="h-40" /></div>;
+
+  return (
+    <Card title="Artist applications" desc="Approve, reject or suspend real DB-backed artist accounts. Only approved artists can publish listings and request payouts.">
+      {!rows.length ? (
+        <p className="py-8 text-center text-sm text-foreground-secondary">No applications yet.</p>
+      ) : (
+        <ul className="divide-y divide-border">
+          {rows.map(({ profile, user }) => (
+            <li key={profile.id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <p className="truncate font-medium">{profile.displayNameEn || profile.displayNameFa} <span className="text-caption text-muted">· {user.email}</span></p>
+                <p className="mt-0.5 truncate text-caption text-foreground-secondary">{profile.professionEn || profile.professionFa || "—"} · commission {profile.commissionPct}%</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge tone={profile.status === "approved" ? "success" : profile.status === "rejected" || profile.status === "suspended" ? "error" : "warning"}>{profile.status}</Badge>
+                {profile.status !== "approved" && <Button size="sm" onClick={() => decide(profile.id, "approved")} disabled={busyId === profile.id}>Approve</Button>}
+                {profile.status !== "rejected" && <Button size="sm" variant="outline" onClick={() => decide(profile.id, "rejected")} disabled={busyId === profile.id}>Reject</Button>}
+                {profile.status === "approved" && <Button size="sm" variant="ghost" onClick={() => decide(profile.id, "suspended")} disabled={busyId === profile.id}>Suspend</Button>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
+  );
+}
+
+/* ---------------- Listing approvals (real DB moderation queue) ---------------- */
+type PendingListingRow = {
+  listing: { id: string; kind: "pattern" | "product"; titleFa: string; titleEn: string; image: string; priceFa: number; priceEn: number; createdAt: string };
+  artist: { displayNameFa: string; displayNameEn: string; slug: string };
+};
+
+function ListingApprovals() {
+  const [rows, setRows] = useState<PendingListingRow[] | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setErr(null);
+    try {
+      const r = await fetch("/api/admin/listings", { ...SESSION_FETCH });
+      const d = (await r.json()) as { ok: boolean; listings?: PendingListingRow[] };
+      if (!r.ok || !d.ok) throw new Error();
+      setRows(d.listings ?? []);
+    } catch {
+      setErr("Could not load pending listings.");
+    }
+  }, []);
+  useEffect(() => { void load(); }, [load]);
+
+  const decide = async (id: string, decision: "published" | "rejected") => {
+    const reason = decision === "rejected" ? window.prompt("Rejection reason (shown to the artist):") ?? "" : undefined;
+    setBusyId(id);
+    try {
+      const r = await fetch(`/api/admin/listings/${id}`, { ...SESSION_FETCH, method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ decision, reason }) });
+      if (!r.ok) throw new Error();
+      await load();
+    } catch {
+      setErr("Action failed.");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  if (err) return <ErrorState message={err} onRetry={load} />;
+  if (!rows) return <div className="space-y-3"><Skeleton className="h-10 w-1/2" /><Skeleton className="h-40" /></div>;
+
+  return (
+    <Card title="Listing approvals" desc="Every pattern or product an artist submits waits here before it appears on the storefront.">
+      {!rows.length ? (
+        <p className="py-8 text-center text-sm text-foreground-secondary">Nothing pending review.</p>
+      ) : (
+        <ul className="divide-y divide-border">
+          {rows.map(({ listing, artist }) => (
+            <li key={listing.id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <p className="truncate font-medium">{listing.titleEn || listing.titleFa} <Badge tone="outline">{listing.kind}</Badge></p>
+                <p className="mt-0.5 truncate text-caption text-foreground-secondary">by {artist.displayNameEn || artist.displayNameFa} · {listing.priceEn} USD / {listing.priceFa} T</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button size="sm" onClick={() => decide(listing.id, "published")} disabled={busyId === listing.id}>Publish</Button>
+                <Button size="sm" variant="outline" onClick={() => decide(listing.id, "rejected")} disabled={busyId === listing.id}>Reject</Button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </Card>
   );
 }
