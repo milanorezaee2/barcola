@@ -30,35 +30,27 @@ export function ArtistCard({ artist, variant = "default", className }: { artist:
         {...cine.cardBind}
         className={cn("group relative flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-medium", className)}
       >
-        {/* featured pattern / portfolio strip */}
+        {/* artist portrait */}
         <Link href={url} className={cn("relative block overflow-hidden bg-background-secondary", variant === "large" ? "aspect-[16/9]" : "aspect-[16/10]")}>
-          {artist.featuredPattern && <Image src={artist.featuredPattern.image} alt="" fill sizes="(max-width:768px) 100vw, 33vw" className="img-zoom object-cover" />}
-          <div className="absolute inset-0 vignette opacity-70" />
-          <div className="absolute bottom-3 inset-inline-start-3 flex gap-1.5">
-            {artist.portfolioPreview.slice(0, 3).map((src) => (
-              <span key={src} className="relative h-10 w-10 overflow-hidden rounded-sm ring-1 ring-white/50 sm:h-12 sm:w-12">
-                <Image src={src} alt="" fill sizes="48px" className="object-cover" />
-              </span>
-            ))}
-          </div>
+          <Image src={artist.avatar} alt={t(artist.name, locale)} fill sizes="(max-width:768px) 100vw, 33vw" className="img-zoom object-cover object-top" />
+          <div className="absolute inset-0 vignette opacity-30" />
         </Link>
-        <div className="relative flex flex-1 flex-col px-5 pb-5">
-          <div className="-mt-8 flex items-end justify-between gap-3">
-            <Link href={url} className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-4 border-surface bg-surface shadow-soft">
-              <Image src={artist.avatar} alt={t(artist.name, locale)} fill sizes="64px" className="object-cover" />
-            </Link>
+        <div className="relative flex flex-1 flex-col p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <Link href={url} className="block truncate text-h4 font-semibold text-foreground hover:text-accent transition-colors">{t(artist.name, locale)}</Link>
+              <p className="mt-0.5 text-caption text-accent">{t(artist.profession, locale)}</p>
+            </div>
             <button
               type="button"
               aria-pressed={following}
               onClick={() => setFollowing((f) => !f)}
-              className={cn("mb-1 inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-caption font-medium transition-all duration-200 active:scale-95", following ? "border-foreground bg-foreground text-background" : "border-border text-foreground hover:border-foreground")}
+              className={cn("inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-caption font-medium transition-all duration-200 active:scale-95", following ? "border-foreground bg-foreground text-background" : "border-border text-foreground hover:border-foreground")}
             >
               {following ? <Check className="h-3.5 w-3.5" /> : <UserPlus className="h-3.5 w-3.5" />}
               {following ? dict.common.following : dict.common.follow}
             </button>
           </div>
-          <Link href={url} className="mt-3 block text-h4 font-semibold text-foreground hover:text-accent transition-colors">{t(artist.name, locale)}</Link>
-          <p className="text-caption text-accent">{t(artist.profession, locale)}</p>
           <p className="mt-2.5 line-clamp-2 text-body-sm text-foreground-secondary">{t(artist.bio, locale)}</p>
           <div className="mt-4 flex items-center justify-between border-t border-border pt-3.5 text-caption text-foreground-secondary">
             <div className="flex gap-4 tabular">

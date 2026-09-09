@@ -10,7 +10,7 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { CineModal, CineModalHero, CineModalRow } from "@/components/ui/CineModal";
 import { AddToCartButton, FavoriteButton } from "@/components/product/Actions";
 import { useCinemaModal } from "@/hooks/useCinemaModal";
-import { cn, formatPrice, href, t } from "@/lib/utils";
+import { cn, faNum, formatPrice, href, t } from "@/lib/utils";
 import type { Artist, Category, Pattern } from "@/lib/types";
 import { QuickView } from "@/components/product/QuickView";
 
@@ -26,6 +26,8 @@ export function PatternCard({ pattern, variant = "default", priority, className 
   const [quick, setQuick] = useState(false);
   const cine = useCinemaModal();
   const url = href(locale, `/patterns/${pattern.slug}`);
+  const line = pattern.line ?? "wallpaper";
+  const isPaint = line === "paint";
   const ratio = variant === "large" ? "aspect-[4/5]" : variant === "wide" ? "aspect-[16/10]" : variant === "compact" ? "aspect-square" : "aspect-[4/5]";
 
   return (
@@ -52,6 +54,7 @@ export function PatternCard({ pattern, variant = "default", priority, className 
           {/* top row */}
           <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
             <div className="flex flex-wrap gap-1.5">
+              {line !== "wallpaper" && <Badge tone="glass">{dict.lines[line]}</Badge>}
               {pattern.isNew && <Badge tone="glass">{dict.common.new}</Badge>}
               {pattern.trending && <Badge tone="glass">{dict.common.trending}</Badge>}
               {pattern.bestSeller && !pattern.trending && <Badge tone="glass">{dict.common.bestSeller}</Badge>}
@@ -109,7 +112,9 @@ export function PatternCard({ pattern, variant = "default", priority, className 
             <Sku value={pattern.sku} />
             {variant !== "compact" && (
               <span className="truncate text-caption text-muted" dir="auto">
-                {t(pattern.specs.repeat, locale)} · {pattern.specs.dpi} · {t(pattern.specs.scale, locale)}
+                {isPaint
+                  ? `${locale === "fa" ? faNum(pattern.specs.colors) : pattern.specs.colors} ${dict.lines.paint} · ${t(pattern.specs.scale, locale)}`
+                  : `${t(pattern.specs.repeat, locale)} · ${pattern.specs.dpi} · ${t(pattern.specs.scale, locale)}`}
               </span>
             )}
           </div>
@@ -123,6 +128,7 @@ export function PatternCard({ pattern, variant = "default", priority, className 
         </CineModalHero>
         <div className="flex flex-col p-6 md:p-8">
           <CineModalRow step={0} className="flex flex-wrap gap-1.5">
+            {line !== "wallpaper" && <Badge tone="accent">{dict.lines[line]}</Badge>}
             {pattern.isNew && <Badge>{dict.common.new}</Badge>}
             {pattern.trending && <Badge>{dict.common.trending}</Badge>}
             {pattern.bestSeller && !pattern.trending && <Badge>{dict.common.bestSeller}</Badge>}
@@ -143,10 +149,19 @@ export function PatternCard({ pattern, variant = "default", priority, className 
           </CineModalRow>
           <CineModalRow step={4}>
             <dl className="mt-5 grid grid-cols-2 gap-3 rounded-lg bg-background-secondary px-4 py-3 text-sm">
-              <div><dt className="text-caption text-muted">{dict.common.repeat}</dt><dd className="mt-0.5 font-medium text-foreground">{t(pattern.specs.repeat, locale)}</dd></div>
-              <div><dt className="text-caption text-muted">{dict.common.dpi}</dt><dd className="mt-0.5 font-medium text-foreground">{pattern.specs.dpi}</dd></div>
-              <div><dt className="text-caption text-muted">{dict.common.formats}</dt><dd className="mt-0.5 font-medium text-foreground">{pattern.specs.formats}</dd></div>
-              <div><dt className="text-caption text-muted">{dict.common.colors}</dt><dd className="mt-0.5 font-medium text-foreground">{pattern.specs.colors}</dd></div>
+              {isPaint ? (
+                <>
+                  <div><dt className="text-caption text-muted">{dict.common.colors}</dt><dd className="mt-0.5 font-medium text-foreground">{locale === "fa" ? faNum(pattern.specs.colors) : pattern.specs.colors} {dict.lines.paint}</dd></div>
+                  <div><dt className="text-caption text-muted">{dict.common.finish}</dt><dd className="mt-0.5 font-medium text-foreground">{t(pattern.specs.scale, locale)}</dd></div>
+                </>
+              ) : (
+                <>
+                  <div><dt className="text-caption text-muted">{dict.common.repeat}</dt><dd className="mt-0.5 font-medium text-foreground">{t(pattern.specs.repeat, locale)}</dd></div>
+                  <div><dt className="text-caption text-muted">{dict.common.dpi}</dt><dd className="mt-0.5 font-medium text-foreground">{pattern.specs.dpi}</dd></div>
+                  <div><dt className="text-caption text-muted">{dict.common.formats}</dt><dd className="mt-0.5 font-medium text-foreground">{pattern.specs.formats}</dd></div>
+                  <div><dt className="text-caption text-muted">{dict.common.colors}</dt><dd className="mt-0.5 font-medium text-foreground">{pattern.specs.colors}</dd></div>
+                </>
+              )}
             </dl>
           </CineModalRow>
           <CineModalRow step={5} className="mt-4 flex gap-1.5">

@@ -51,7 +51,7 @@ export const artists: Artist[] = [
     name: L("نیلوفر راد", "Niloufar Rad"),
     profession: L("طراح سطح و پارچه", "Surface & textile designer"),
     bio: L("نیلوفر با گواش و مرکب کار می‌کند؛ باغ‌های نقاشی‌شده‌اش در بیش از چهل پروژه مسکونی اجرا شده‌اند.", "Niloufar works in gouache and ink; her painted gardens have been installed in over forty residential projects."),
-    avatar: "/images/collections/s01.jpg", cover: "/images/hero/hero-main.jpg",
+    avatar: "/images/artists/niloufar-rad.jpg", cover: "/images/hero/hero-main.jpg",
     location: L("تهران", "Tehran"),
     social: { instagram: "niloufar.rad", behance: "niloufarrad" },
     featured: true, followers: 12800, rating: 4.9, reviewsCount: 143,
@@ -61,7 +61,7 @@ export const artists: Artist[] = [
     name: L("آرمان کیان", "Arman Kian"),
     profession: L("طراح گرافیک و هندسه", "Graphic & geometric designer"),
     bio: L("آرمان با ساختار، تکرار و خط نازک کار می‌کند. الگوهایش برای هتل‌ها و فضاهای کاری طراحی شده‌اند.", "Arman works with structure, repetition and the thin line. His patterns are designed for hotels and workplaces."),
-    avatar: "/images/collections/s02.jpg", cover: "/images/portfolios/pf01.jpg",
+    avatar: "/images/artists/arman-kian.jpg", cover: "/images/portfolios/pf01.jpg",
     location: L("اصفهان", "Isfahan"),
     social: { instagram: "arman.kian", website: "armankian.studio" },
     featured: true, followers: 8400, rating: 4.8, reviewsCount: 96,
@@ -71,7 +71,7 @@ export const artists: Artist[] = [
     name: L("سارا مهر", "Sara Mehr"),
     profession: L("تصویرگر و طراح الگو", "Illustrator & pattern designer"),
     bio: L("سارا داستان‌های کوچک را در الگوهای کودک و آبرنگ گل روایت می‌کند؛ نرم، صمیمی و دقیق.", "Sara tells small stories through kids' patterns and floral watercolours — soft, warm and precise."),
-    avatar: "/images/collections/s03.jpg", cover: "/images/portfolios/pf06.jpg",
+    avatar: "/images/artists/sara-mehr.jpg", cover: "/images/portfolios/pf06.jpg",
     location: L("شیراز", "Shiraz"),
     social: { instagram: "sara.mehr.art" },
     featured: true, followers: 15200, rating: 4.9, reviewsCount: 211,
@@ -81,7 +81,7 @@ export const artists: Artist[] = [
     name: L("حسین تبریزی", "Hossein Tabrizi"),
     profession: L("استاد نقش سنتی و کاشی", "Master of traditional ornament & tile"),
     bio: L("حسین چهار دهه در نقش سنتی کار کرده و امروز اسلیمی را برای فضاهای معاصر بازخوانی می‌کند.", "Hossein has worked four decades in traditional ornament and today reinterprets eslimi for contemporary spaces."),
-    avatar: "/images/collections/s04.jpg", cover: "/images/portfolios/pf02.jpg",
+    avatar: "/images/artists/hossein-tabrizi.jpg", cover: "/images/portfolios/pf02.jpg",
     location: L("تبریز", "Tabriz"),
     social: { website: "tabrizi-atelier.ir" },
     featured: true, followers: 6100, rating: 5, reviewsCount: 58,
@@ -104,6 +104,29 @@ export const patterns: Pattern[] = [
   { id: "pattern-hairline-grid", sku: "RA-PT-0106", slug: "hairline-grid", title: L("شبکه‌ی مویی", "Hairline Grid"), description: L("نقطه‌های ریز و شبکه‌ی نازک خاکستری روی سفید؛ نهایت مینیمالیسم.", "Fine dots and a thin grey grid on white — minimalism at its edge."), image: "/images/patterns/p06.jpg", gallery: ["/images/patterns/p06.jpg", "/images/portfolios/pf05.jpg"], categoryId: "cat-minimal", spaceIds: ["space-office", "space-bedroom"], artistId: null, price: { fa: 1200000, en: 32 }, specs: spec("۱۶ سانتی‌متر", "16 cm", 2, "کوچک", "Small"), palette: ["#9aa0a6", "#ffffff"], tags: ["minimal", "grid"], featured: false, trending: false, bestSeller: true, isNew: true, createdAt: "2026-08-20", likes: 540 },
   { id: "pattern-little-moons", sku: "RA-PT-0107", slug: "little-moons", title: L("ماه‌های کوچک", "Little Moons"), description: L("ماه، ستاره و بالن‌های کوچک؛ برای خواب‌های آرام.", "Moons, stars and little balloons — for quiet sleep."), image: "/images/patterns/p07.jpg", gallery: ["/images/patterns/p07.jpg", "/images/portfolios/pf03.jpg"], categoryId: "cat-kids", spaceIds: ["space-kids-room"], artistId: "artist-sara-mehr", price: { fa: 1450000, en: 39 }, specs: spec("۳۲ سانتی‌متر", "32 cm", 5, "متوسط", "Medium"), palette: ["#a9c1d9", "#d9a441", "#f3d9d2"], tags: ["kids"], featured: true, trending: true, bestSeller: false, isNew: true, createdAt: "2026-08-01", likes: 890 },
   { id: "pattern-copper-damask", sku: "RA-PT-0108", slug: "copper-damask", title: L("داماسک مسی", "Copper Damask"), description: L("نقش داماسک با مس براق روی سنگ‌آبی تیره؛ برای فضاهای شبانه.", "Damask in burnished copper on deep slate — for evening spaces."), image: "/images/patterns/p08.jpg", gallery: ["/images/patterns/p08.jpg", "/images/portfolios/pf04.jpg"], categoryId: "cat-luxury", spaceIds: ["space-hospitality"], artistId: "artist-arman-kian", price: { fa: 2800000, en: 74 }, specs: spec("۶۴ سانتی‌متر", "64 cm", 3, "بزرگ", "Large"), palette: ["#1c1f26", "#b5713a", "#3b4658"], tags: ["luxury", "damask"], featured: true, trending: false, bestSeller: true, isNew: false, createdAt: "2026-01-30", likes: 1420 },
+
+/* ------------------------------------------------------------------ */
+/* Additional lines — fabric, paint & clothing surface designs          */
+/* ------------------------------------------------------------------ */
+/* Fabric — printed textile designs                                    */
+/* ------------------------------------------------------------------ */
+  { id: "pattern-linen-botanical", sku: "RA-PT-0201", slug: "linen-botanical", title: L("تابستان گیاهی", "Linen Botanical"), description: L("طراحی چاپ کتان برای پارچه‌ی پرده و مبلی؛ برگ و سرخس با تکرار پیوسته.", "A linen print for curtains & upholstery — leaves and ferns in a seamless repeat."), image: "/images/lines/fabric-botanical.jpg", gallery: ["/images/lines/fabric-botanical.jpg", "/images/collections/s01.jpg"], categoryId: "cat-botanical", spaceIds: ["space-living-room", "space-bedroom"], artistId: "artist-niloufar-rad", price: { fa: 1850000, en: 49 }, specs: spec("۴۸ سانتی‌متر", "48 cm", 5, "متوسط", "Medium"), palette: ["#5b6f8a", "#8fa08e", "#efe9dd"], tags: ["fabric", "textile", "botanical"], line: "fabric", featured: false, trending: true, bestSeller: false, isNew: false, createdAt: "2026-07-18", likes: 460 },
+  { id: "pattern-boteh-cashmere", sku: "RA-PT-0202", slug: "boteh-cashmere", title: L("بته‌جقه‌ی کشمیر", "Cashmere Boteh"), description: L("بته‌جقه‌ی سنتی با زعفران و سرمه روی پارچه؛ الگویی بی‌زمان برای شال و رومبلی.", "A timeless boteh in saffron & indigo for shawls and soft furnishings."), image: "/images/lines/fabric-boteh.jpg", gallery: ["/images/lines/fabric-boteh.jpg", "/images/collections/s04.jpg"], categoryId: "cat-persian", spaceIds: ["space-bedroom", "space-living-room"], artistId: "artist-hossein-tabrizi", price: { fa: 2100000, en: 56 }, specs: spec("۳۲ سانتی‌متر", "32 cm", 4, "کوچک", "Small"), palette: ["#1f3a8a", "#c8a24a", "#8a2b1d"], tags: ["fabric", "textile", "boteh"], line: "fabric", featured: false, trending: false, bestSeller: true, isNew: false, createdAt: "2026-07-02", likes: 380 },
+  { id: "pattern-mosaic-navy", sku: "RA-PT-0203", slug: "mosaic-navy", title: L("موزاییک سرمه‌ای", "Navy Mosaic"), description: L("چاپ هندسی موج‌دار برای پارچه‌ی دکوراتیو و کوسن؛ ریتم شیشه‌ای در سایه‌های آبی.", "A wavy geometric textile print for decor fabric — glassy rhythm in blues."), image: "/images/lines/fabric-mosaic.jpg", gallery: ["/images/lines/fabric-mosaic.jpg", "/images/collections/s02.jpg"], categoryId: "cat-geometric", spaceIds: ["space-office", "space-hospitality"], artistId: "artist-arman-kian", price: { fa: 1650000, en: 44 }, specs: spec("۶۴ سانتی‌متر", "64 cm", 3, "بزرگ", "Large"), palette: ["#1b2e4b", "#5b7c99", "#e4e0d6"], tags: ["fabric", "textile", "geometric"], line: "fabric", featured: false, trending: false, bestSeller: false, isNew: true, createdAt: "2026-06-25", likes: 320 },
+
+/* ------------------------------------------------------------------ */
+/* Paint — colourways & colour designs for walls and surfaces           */
+/* ------------------------------------------------------------------ */
+  { id: "pattern-terra-dusk", sku: "RA-PT-0301", slug: "terra-dusk", title: L("غروبِ گلی", "Terra Dusk"), description: L("رنگ‌بندی گرم تراکوتا و مس با هایلایت غروب؛ برای دیوار تاکید و فضاهای صمیمی.", "Warm terracotta & copper colourway with a dusk highlight — for feature walls."), image: "/images/lines/paint-dusk.jpg", gallery: ["/images/lines/paint-dusk.jpg", "/images/collections/s06.jpg"], categoryId: "cat-minimal", spaceIds: ["space-living-room", "space-cafe"], artistId: null, price: { fa: 980000, en: 26 }, specs: spec("—", "—", 6, "مات", "Matte"), palette: ["#b86b4b", "#d9a18a", "#7c5140"], tags: ["paint", "colourway"], line: "paint", featured: false, trending: true, bestSeller: false, isNew: false, createdAt: "2026-08-15", likes: 210 },
+  { id: "pattern-lapis-atelier", sku: "RA-PT-0302", slug: "lapis-atelier", title: L("لاجورد آتلیه", "Atelier Lapis"), description: L("پالت سرمه‌ای و لاجورد با خط مسی برای دیوارهای کتابخانه و اتاق کار.", "A deep navy & lapis palette with a copper hairline for studies and libraries."), image: "/images/lines/paint-lapis.jpg", gallery: ["/images/lines/paint-lapis.jpg", "/images/collections/s08.jpg"], categoryId: "cat-luxury", spaceIds: ["space-office", "space-bedroom"], artistId: "artist-arman-kian", price: { fa: 1120000, en: 30 }, specs: spec("—", "—", 5, "نیمه‌مات", "Eggshell"), palette: ["#1f3a8a", "#3b4658", "#c8a24a"], tags: ["paint", "colourway"], line: "paint", featured: false, trending: false, bestSeller: true, isNew: false, createdAt: "2026-08-04", likes: 175 },
+  { id: "pattern-sage-room", sku: "RA-PT-0303", slug: "sage-room", title: L("اتاقِ مریم‌گلی", "Sage Room"), description: L("رنگ‌بندی مریم‌گلی و عاج گرم با لمس گیاهی؛ آرامش برای اتاق خواب و کودک.", "A calming sage & warm ivory colourway with a botanical touch."), image: "/images/lines/paint-sage.jpg", gallery: ["/images/lines/paint-sage.jpg", "/images/collections/s03.jpg"], categoryId: "cat-botanical", spaceIds: ["space-bedroom", "space-kids-room"], artistId: "artist-sara-mehr", price: { fa: 1050000, en: 28 }, specs: spec("—", "—", 4, "مات", "Matte"), palette: ["#8fa08e", "#d8cdb6", "#6b7f6e"], tags: ["paint", "colourway"], line: "paint", featured: false, trending: false, bestSeller: false, isNew: true, createdAt: "2026-07-27", likes: 240 },
+
+/* ------------------------------------------------------------------ */
+/* Clothing — print designs for garments & accessories                  */
+/* ------------------------------------------------------------------ */
+  { id: "pattern-dress-bloom", sku: "RA-PT-0401", slug: "dress-bloom", title: L("شکوفه‌ی پیراهن", "Bloom Dress Print"), description: L("چاپ گل‌های صدتومانی آبرنگی برای پیراهن و سارافون؛ نرم و تابستانی.", "Watercolour peony all-over print for dresses & pinafores — soft and summery."), image: "/images/lines/clothing-bloom.jpg", gallery: ["/images/lines/clothing-bloom.jpg", "/images/collections/s03.jpg"], categoryId: "cat-floral", spaceIds: ["space-bedroom"], artistId: "artist-sara-mehr", price: { fa: 1500000, en: 40 }, specs: spec("۲۴ سانتی‌متر", "24 cm", 6, "کوچک", "Small"), palette: ["#c99a92", "#b86b4b", "#efe9dd"], tags: ["clothing", "apparel", "floral"], line: "clothing", featured: false, trending: true, bestSeller: false, isNew: false, createdAt: "2026-08-21", likes: 310 },
+  { id: "pattern-kaftan-eslimi", sku: "RA-PT-0402", slug: "kaftan-eslimi", title: L("کتانِ اسلیمی", "Eslimi Kaftan Print"), description: L("چاپ اسلیمی لاجورد روی کتان برای کفتان و پیراهن‌های آزاد؛ ظرافت سنتی در حرکت.", "A lapis eslimi print on linen for kaftans & fluid shirts — heritage in motion."), image: "/images/lines/clothing-eslimi.jpg", gallery: ["/images/lines/clothing-eslimi.jpg", "/images/collections/s04.jpg"], categoryId: "cat-persian", spaceIds: ["space-bedroom"], artistId: "artist-hossein-tabrizi", price: { fa: 1680000, en: 45 }, specs: spec("۴۸ سانتی‌متر", "48 cm", 4, "متوسط", "Medium"), palette: ["#1f3a8a", "#c8a24a", "#f2ede2"], tags: ["clothing", "apparel", "eslimi"], line: "clothing", featured: false, trending: false, bestSeller: true, isNew: false, createdAt: "2026-08-12", likes: 265 },
+  { id: "pattern-stripe-linen", sku: "RA-PT-0403", slug: "linen-morn", title: L("صبحِ کتانی", "Linen Morn Print"), description: L("راه‌راه نازک و نقطه‌چین کتانی برای شومیز و پیراهن مردانه؛ ساده و امروزی.", "A fine stripe & dot linen print for shirting — simple and contemporary."), image: "/images/lines/clothing-linen.jpg", gallery: ["/images/lines/clothing-linen.jpg", "/images/collections/s06.jpg"], categoryId: "cat-minimal", spaceIds: ["space-bedroom"], artistId: null, price: { fa: 1320000, en: 35 }, specs: spec("۱۶ سانتی‌متر", "16 cm", 2, "ریز", "Mini"), palette: ["#9aa0a6", "#ffffff", "#cfd3d8"], tags: ["clothing", "apparel", "minimal"], line: "clothing", featured: false, trending: false, bestSeller: false, isNew: true, createdAt: "2026-08-01", likes: 190 },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -324,7 +347,7 @@ export const collections: Collection[] = [
 ];
 
 export const homeSections: HomeSection[] = [
-  "hero", "discovery", "trending", "bestSellers", "newPatterns", "artists", "portfolios", "styles", "spaces", "exclusive", "projects", "education", "b2b", "custom", "stories", "newsletter",
+  "hero", "discovery", "surfaces", "trending", "bestSellers", "newPatterns", "artists", "portfolios", "styles", "spaces", "exclusive", "projects", "education", "b2b", "custom", "stories", "newsletter",
 ].map((key, i) => ({ key: key as HomeSection["key"], enabled: true, order: i + 1 }));
 
 export const banners: Banner[] = [
@@ -344,16 +367,16 @@ export const hero: HeroContent = {
   titleA: L("الگوهایی که", "Patterns that"),
   titleB: L("فضا را روایت می‌کنند.", "tell the story of a space."),
   description: L("رزی آتلیه پلتفرم کشف الگو، محصولات دکوراتیو و همکاری با طراحان مستقل است — از سطح تا سبک زندگی.", "Rosie Atelier is a platform for discovering patterns, decorative products and collaborating with independent designers — from surface to lifestyle."),
-  image: "/images/hero/hero-main.jpg",
+  image: "/images/hero/hb-wallpaper.jpg",
   images: [
-    "/images/hero/hero-main.jpg",
-    "/images/portfolios/pf01.jpg",
-    "/images/hero/hero-clock1.jpg",
-    "/images/hero/hero-clock.jpg",
+    "/images/hero/hb-wallpaper.jpg",
+    "/images/hero/hb-fabric.jpg",
+    "/images/hero/hb-paint.jpg",
+    "/images/hero/hb-clothing.jpg",
   ],
   ctaHref: "/patterns",
   cta2Href: "/portfolio",
-  featuredPatternIds: ["pattern-quiet-garden", "pattern-lapis-eslimi", "pattern-copper-damask", "pattern-dusty-bloom"],
+  featuredPatternIds: ["pattern-quiet-garden", "pattern-linen-botanical", "pattern-lapis-atelier", "pattern-dress-bloom"],
 };
 
 export const seedContent: SiteContent = {

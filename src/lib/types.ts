@@ -44,6 +44,15 @@ export interface PatternSpec {
   scale: Localized;
 }
 
+/**
+ * The material / use-surface a design is created & licensed for.
+ * Wallpaper is the atelier's original line; fabric, paint (colourway)
+ * and clothing are additional lines — all rendered through the same library.
+ */
+export type PatternLine = "wallpaper" | "fabric" | "paint" | "clothing";
+
+export const PATTERN_LINES: PatternLine[] = ["wallpaper", "fabric", "paint", "clothing"];
+
 export interface Pattern {
   id: ID;
   sku: string;
@@ -59,6 +68,7 @@ export interface Pattern {
   specs: PatternSpec;
   palette: string[];
   tags: string[];
+  line?: PatternLine; // wallpaper if absent
   featured: boolean;
   trending: boolean;
   bestSeller: boolean;
@@ -178,6 +188,7 @@ export interface Collection {
 export type HomeSectionKey =
   | "hero"
   | "discovery"
+  | "surfaces"
   | "trending"
   | "bestSellers"
   | "newPatterns"

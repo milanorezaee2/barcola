@@ -36,6 +36,9 @@ export default async function PatternPage({ params }: Props) {
   if (!raw) notFound();
   const d = dictionaries[locale];
   const p = enrichPattern(site, raw);
+  const line = p.line ?? "wallpaper";
+  const isPaint = line === "paint";
+  const colorCount = locale === "fa" ? faNum(p.specs.colors) : String(p.specs.colors);
   const related = site.patterns.filter((x) => x.id !== p.id && (x.categoryId === p.categoryId || x.artistId === p.artistId)).slice(0, 4).map((x) => enrichPattern(site, x));
   const products = site.products.filter((x) => x.patternId === p.id).map((x) => enrichProduct(site, x));
   const spaces = site.spaces.filter((s) => p.spaceIds.includes(s.id));
@@ -56,6 +59,7 @@ export default async function PatternPage({ params }: Props) {
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-[calc(var(--header-h-compact)+1.5rem)]">
               <div className="flex flex-wrap items-center gap-2">
+                {line !== "wallpaper" && <Badge tone="accent">{d.lines[line]}</Badge>}
                 <Sku value={p.sku} />
                 {p.category && <Badge>{t(p.category.name, locale)}</Badge>}
                 {p.isNew && <Badge tone="accent">{d.common.new}</Badge>}
@@ -77,22 +81,47 @@ export default async function PatternPage({ params }: Props) {
               <p className="mt-6 text-body text-foreground-secondary">{t(p.description, locale)}</p>
 
               <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 border-y border-border py-6 text-sm">
-                <Spec k={d.common.repeat} v={t(p.specs.repeat, locale)} />
-                <Spec k={d.common.dpi} v={p.specs.dpi} />
-                <Spec k={d.common.formats} v={p.specs.formats} />
-                <Spec k={d.common.colors} v={locale === "fa" ? faNum(p.specs.colors) : String(p.specs.colors)} />
-                <Spec k={d.common.size} v={t(p.specs.scale, locale)} />
+                {isPaint ? (
+                  <>
+                    <Spec k={d.common.colors} v={`${colorCount} ${d.lines.paint}`} />
+                    <Spec k={d.common.finish} v={t(p.specs.scale, locale)} />
+                  </>
+                ) : (
+                  <>
+                    <Spec k={d.common.repeat} v={t(p.specs.repeat, locale)} />
+                    <Spec k={d.common.dpi} v={p.specs.dpi} />
+                    <Spec k={d.common.formats} v={p.specs.formats} />
+                    <Spec k={d.common.colors} v={colorCount} />
+                    <Spec k={d.common.size} v={t(p.specs.scale, locale)} />
+                  </>
+                )}
                 <div>
                   <dt className="text-caption text-muted">{d.common.colors}</dt>
                   <dd className="mt-1.5 flex gap-1.5">{p.palette.map((c) => <span key={c} className="h-5 w-5 rounded-full ring-1 ring-border" style={{ background: c }} title={c} />)}</dd>
                 </div>
               </dl>
 
+              {/* Available as a surface — lets visitors move between the four lines */}
+              <div className="mt-6">
+                <p className="text-label text-muted">{d.lines.label}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {(["wallpaper", "fabric", "paint", "clothing"] as const).map((l) => {
+                    const active = l === line;
+                    return (
+                      <Link key={l} href={href(locale, `/patterns?line=${l}`)} aria-current={active ? "page" : undefined}
+                        className={`rounded-full border px-3 py-1.5 text-caption transition-colors ${active ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}>
+                        {d.lines[l]}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+
               <PatternBuyBox pattern={p} />
 
               <ul className="mt-6 space-y-2 text-caption text-foreground-secondary">
                 <li className="flex items-center gap-2"><Shield className="h-3.5 w-3.5 text-accent" />{d.common.licenseNote}</li>
-                <li className="flex items-center gap-2"><FileDown className="h-3.5 w-3.5 text-accent" />{p.specs.formats} · {p.specs.dpi}</li>
+                <li className="flex items-center gap-2"><FileDown className="h-3.5 w-3.5 text-accent" />{isPaint ? `${colorCount} ${d.lines.paint} · ${t(p.specs.scale, locale)}` : `${p.specs.formats} · ${p.specs.dpi}`}</li>
                 <li className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-accent" />{locale === "fa" ? "دسترسی آنی پس از خرید" : "Instant access after purchase"}</li>
               </ul>
 

@@ -19,7 +19,7 @@ import { EducationCard, type EducationCardData } from "@/components/cards/Educat
 import { StyleCard } from "@/components/cards/StyleCard";
 import { NewsletterForm } from "@/components/layout/NewsletterForm";
 import { faNum, href, t } from "@/lib/utils";
-import type { Artist, Category, Space, Story } from "@/lib/types";
+import type { Artist, Category, PatternLine, Space, Story } from "@/lib/types";
 
 /* ------------------------------------------------------------------ */
 export function DiscoverySection({ patterns, categories }: { patterns: PatternCardData[]; categories: Category[] }) {
@@ -53,6 +53,43 @@ export function DiscoverySection({ patterns, categories }: { patterns: PatternCa
 }
 
 /* ------------------------------------------------------------------ */
+/** The four surface lines of the atelier — wallpaper, fabric, paint, clothing. */
+export function SurfacesSection({ items }: { items: { key: PatternLine; count: number; image: string }[] }) {
+  const { locale, dict } = useLocale();
+  if (!items.length) return null;
+  return (
+    <SectionShell>
+      <SectionHeader eyebrow={dict.home.surfacesEyebrow} title={dict.home.surfacesTitle} description={dict.home.surfacesDesc} href={href(locale, "/patterns")} hrefLabel={dict.nav.viewAll} />
+      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {items.map((it, i) => (
+          <Reveal key={it.key} delay={i * 70}>
+            <Link href={href(locale, `/patterns?line=${it.key}`)} className="group relative block aspect-[4/5] overflow-hidden rounded-xl border border-border bg-background-secondary">
+              <Image src={it.image} alt={dict.lines[it.key]} fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw" className="img-zoom object-cover transition-transform duration-700 ease-[var(--ease-out)] group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-black/10 transition-opacity duration-500 group-hover:opacity-95" />
+              <span className="absolute top-4 start-4 rounded-full bg-black/45 px-2.5 py-1 text-caption tabular text-white backdrop-blur-md">
+                {locale === "fa" ? faNum(it.count) : it.count} {dict.common.designs}
+              </span>
+              <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                <p className="text-caption uppercase tracking-[0.22em] text-white/55">{locale === "fa" ? faNum(String(i + 1).padStart(2, "0")) : String(i + 1).padStart(2, "0")}</p>
+                <div className="mt-1 flex items-end justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="font-display text-h3 leading-none text-balance">{dict.lines[it.key]}</h3>
+                    <p className="mt-2 line-clamp-2 max-w-[16rem] text-caption leading-snug text-white/75">{dict.lines[`${it.key}Meta`]}</p>
+                  </div>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/40 text-white transition-[background-color,border-color] duration-300 group-hover:bg-white group-hover:text-black">
+                    <ArrowUpRight className="h-4 w-4 rtl-flip arrow-shift" />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </Reveal>
+        ))}
+      </div>
+    </SectionShell>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 export function PatternRail({ id, eyebrow, title, description, patterns, hrefPath, tone = "default" }: { id: string; eyebrow?: string; title: string; description?: string; patterns: PatternCardData[]; hrefPath: string; tone?: "default" | "secondary" }) {
   const { locale, dict } = useLocale();
   return (
@@ -72,15 +109,18 @@ export function PatternRail({ id, eyebrow, title, description, patterns, hrefPat
 /* ------------------------------------------------------------------ */
 export function BestSellersSection({ patterns, products, tone = "default" }: { patterns: PatternCardData[]; products: ProductCardData[]; tone?: "default" | "secondary" }) {
   const { locale, dict } = useLocale();
+  if (!products.length && !patterns.length) return null;
   return (
     <SectionShell tone={tone}>
       <SectionHeader eyebrow={dict.common.bestSeller} title={dict.home.bestTitle} description={dict.home.bestDesc} href={href(locale, "/patterns?sort=best")} hrefLabel={dict.nav.viewAll} />
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {patterns.slice(0, 2).map((p, i) => (
-          <Reveal key={p.id} delay={i * 60}><PatternCard pattern={p} variant="large" /></Reveal>
-        ))}
+      {/* Uniform grid — every card the same large size: leading physical
+          best-seller product(s) + one best-seller per catalogue line. */}
+      <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-3 lg:gap-6">
         {products.slice(0, 2).map((p, i) => (
-          <Reveal key={p.id} delay={(i + 2) * 60}><ProductCard product={p} variant="large" /></Reveal>
+          <Reveal key={p.id} delay={i * 50}><ProductCard product={p} variant="large" className="h-full" /></Reveal>
+        ))}
+        {patterns.slice(0, 4).map((p, i) => (
+          <Reveal key={p.id} delay={(i + products.length) * 50}><PatternCard pattern={p} variant="large" className="h-full" /></Reveal>
         ))}
       </div>
     </SectionShell>
@@ -172,7 +212,7 @@ export function SpacesSection({ spaces }: { spaces: Space[] }) {
 }
 
 /* ------------------------------------------------------------------ */
-export function ExclusiveSection({ products }: { products: ProductCardData[] }) {
+export function ExclusiveSection({ patterns, products }: { patterns: PatternCardData[]; products: ProductCardData[] }) {
   const { locale, dict } = useLocale();
   const [lead, ...rest] = products;
   if (!lead) return null;
@@ -183,7 +223,26 @@ export function ExclusiveSection({ products }: { products: ProductCardData[] }) 
           <div className="pointer-events-none absolute -top-40 end-[-10%] h-[520px] w-[520px] rounded-full bg-accent/20 blur-[140px]" />
           <div className="relative px-5 py-12 sm:px-8 md:px-12 md:py-16 lg:py-20">
             <SectionHeader tone="inverse" eyebrow={dict.common.siteExclusive} title={dict.home.exclusiveTitle} description={dict.home.exclusiveDesc} href={href(locale, "/shop")} hrefLabel={dict.nav.viewAll} />
-            <div className="mt-10 grid gap-6 lg:grid-cols-12">
+            {/* Cross-line editorial picks — one signature motif per surface line */}
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {patterns.slice(0, 4).map((p, i) => {
+                const lineKey = (p.line ?? "wallpaper") as keyof typeof dict.lines;
+                return (
+                  <Reveal key={p.id} delay={i * 60}>
+                    <Link href={href(locale, `/patterns?line=${lineKey}`)} className="group relative block aspect-[4/5] overflow-hidden rounded-xl border border-white/10">
+                      <Image src={p.image} alt={t(p.title, locale)} fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw" className="img-zoom object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-black/10" />
+                      <span className="absolute top-4 start-4 rounded-full bg-white/15 px-2.5 py-1 text-caption backdrop-blur-md">{dict.lines[lineKey]}</span>
+                      <div className="absolute inset-x-0 bottom-0 p-5">
+                        <h3 className="font-display text-h3 leading-tight">{t(p.title, locale)}</h3>
+                      </div>
+                    </Link>
+                  </Reveal>
+                );
+              })}
+            </div>
+            {/* Leading physical exclusive objects */}
+            <div className="mt-8 grid gap-6 lg:grid-cols-12">
               <Reveal className="lg:col-span-5">
                 <Link href={href(locale, `/shop/${lead.slug}`)} className="group relative block aspect-[4/5] overflow-hidden rounded-xl border border-white/10">
                   <Image src={lead.colors[0].image} alt={t(lead.title, locale)} fill sizes="(max-width:1024px) 100vw, 40vw" className="img-zoom object-cover" />

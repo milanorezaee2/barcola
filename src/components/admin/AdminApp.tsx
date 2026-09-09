@@ -17,7 +17,7 @@ import type { Localized } from "@/lib/i18n/types";
 type Section = "home" | "hero" | "categories" | "patterns" | "products" | "artists" | "portfolios" | "education" | "banners" | "seo" | "artistApplications" | "listingApprovals";
 
 const SECTION_LABELS: Record<HomeSectionKey, string> = {
-  hero: "Hero", discovery: "Pattern Discovery", trending: "Trending Patterns", bestSellers: "Best Sellers", newPatterns: "New Patterns", artists: "Featured Artists", portfolios: "Featured Portfolios", styles: "Browse by Style", spaces: "Browse by Space", exclusive: "Exclusive Collection", projects: "Featured Projects", education: "Academy", b2b: "B2B", custom: "Custom Production", stories: "Artist Stories", newsletter: "Newsletter",
+  hero: "Hero", discovery: "Pattern Discovery", surfaces: "Surface Lines", trending: "Trending Patterns", bestSellers: "Best Sellers", newPatterns: "New Patterns", artists: "Featured Artists", portfolios: "Featured Portfolios", styles: "Browse by Style", spaces: "Browse by Space", exclusive: "Exclusive Collection", projects: "Featured Projects", education: "Academy", b2b: "B2B", custom: "Custom Production", stories: "Artist Stories", newsletter: "Newsletter",
 };
 
 /** Grace period before an unauthenticated admin is sent to /login (ms). */

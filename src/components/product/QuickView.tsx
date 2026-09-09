@@ -27,21 +27,33 @@ export function QuickView({ open, onClose, item }: { open: boolean; onClose: () 
 function PatternQuick({ p }: { p: PatternCardData }) {
   const { locale, dict } = useLocale();
   const url = href(locale, `/patterns/${p.slug}`);
+  const line = p.line ?? "wallpaper";
+  const isPaint = line === "paint";
+  const colorCount = locale === "fa" ? p.specs.colors.toLocaleString("fa-IR") : String(p.specs.colors);
   return (
     <div className="grid md:grid-cols-2">
       <div className="relative aspect-square bg-background-secondary md:aspect-auto md:min-h-[520px]">
         <Image src={p.image} alt={t(p.title, locale)} fill sizes="(max-width:768px) 100vw, 50vw" className="object-cover" />
       </div>
       <div className="flex flex-col p-6 md:p-8">
-        <div className="flex items-center gap-2"><Sku value={p.sku} />{p.category && <Badge>{t(p.category.name, locale)}</Badge>}</div>
+        <div className="flex flex-wrap items-center gap-2">{line !== "wallpaper" && <Badge tone="accent">{dict.lines[line]}</Badge>}<Sku value={p.sku} />{p.category && <Badge>{t(p.category.name, locale)}</Badge>}</div>
         <h3 className="mt-4 font-display text-h2">{t(p.title, locale)}</h3>
         <p className="mt-1 text-sm text-foreground-secondary">{p.artist ? t(p.artist.name, locale) : dict.brand}</p>
         <p className="mt-5 text-body text-foreground-secondary">{t(p.description, locale)}</p>
         <dl className="mt-6 grid grid-cols-2 gap-4 border-t border-border pt-5 text-sm">
-          <Row k={dict.common.repeat} v={t(p.specs.repeat, locale)} />
-          <Row k={dict.common.dpi} v={p.specs.dpi} />
-          <Row k={dict.common.formats} v={p.specs.formats} />
-          <Row k={dict.common.colors} v={String(p.specs.colors)} />
+          {isPaint ? (
+            <>
+              <Row k={dict.common.colors} v={`${colorCount} ${dict.lines.paint}`} />
+              <Row k={dict.common.finish} v={t(p.specs.scale, locale)} />
+            </>
+          ) : (
+            <>
+              <Row k={dict.common.repeat} v={t(p.specs.repeat, locale)} />
+              <Row k={dict.common.dpi} v={p.specs.dpi} />
+              <Row k={dict.common.formats} v={p.specs.formats} />
+              <Row k={dict.common.colors} v={String(p.specs.colors)} />
+            </>
+          )}
         </dl>
         <div className="mt-auto flex items-center justify-between gap-4 pt-8">
           <span className="text-h3 font-semibold tabular">{formatPrice(p.price, locale)}</span>

@@ -3,6 +3,18 @@ import type { Locale } from "./types";
 const fa = {
   brand: "رزی آتلیه",
   tagline: "الگو، طراحی، خلاقیت، سبک زندگی",
+  lines: {
+    label: "کاربری",
+    all: "همه‌ی کاربردها",
+    wallpaper: "کاغذ دیواری",
+    fabric: "پارچه",
+    paint: "رنگ",
+    clothing: "لباس",
+    wallpaperMeta: "طرح‌های اختصاصی برای کاغذ دیواری",
+    fabricMeta: "طرح‌های چاپ روی پارچه و منسوجات",
+    paintMeta: "رنگ‌بندی و طرح‌های رنگ برای دیوار و سطوح",
+    clothingMeta: "طرح‌های چاپ برای پوشاک و اکسسوری",
+  },
   nav: {
     patterns: "الگوها",
     products: "فروشگاه",
@@ -138,11 +150,13 @@ const fa = {
     license: "لایسنس",
     digital: "دیجیتال",
     physical: "فیزیکی",
+    designs: "طرح",
     dpi: "کیفیت",
     repeat: "تکرار",
     formats: "فرمت",
+    finish: "پوشش",
     inLibrary: "در کتابخانه شما",
-    licenseNote: "لایسنس تجاری برای چاپ روی کاغذ دیواری، پارچه و محصولات دکوراتیو.",
+    licenseNote: "لایسنس تجاری چاپ روی کاغذ دیواری، پارچه، رنگ و پوشاک.",
   },
   home: {
     heroEyebrow: "استودیوی الگو و طراحی",
@@ -158,6 +172,9 @@ const fa = {
     discoveryEyebrow: "کشف الگو",
     discoveryTitle: "کتابخانه‌ای زنده از سطح و نقش",
     discoveryDesc: "هر الگو با مشخصات فنی، طراح و لایسنس تجاری. برای کاغذ دیواری، پارچه و محصول.",
+    surfacesEyebrow: "چهار سطح؛ یک زبان",
+    surfacesTitle: "از دیوار تا پارچه و پوشاک",
+    surfacesDesc: "نقش‌ها فقط برای دیوار نیستند؛ همان زبان طراحی را در کاغذ دیواری، پارچه، رنگ و لباس ببینید — هر کدام با مشخصات و لایسنس مخصوص خودش.",
     trendingTitle: "الگوهای پرطرفدار",
     trendingDesc: "آنچه این هفته بیش از همه دیده و ذخیره شده.",
     bestTitle: "پرفروش‌ترین‌ها",
@@ -234,6 +251,7 @@ const fa = {
 type Dict = {
   brand: string;
   tagline: string;
+  lines: Record<keyof typeof fa.lines, string>;
   nav: Record<keyof typeof fa.nav, string>;
   common: Record<keyof typeof fa.common, string>;
   home: Record<keyof typeof fa.home, string>;
@@ -245,6 +263,18 @@ type Dict = {
 const en: Dict = {
   brand: "Rosie Atelier",
   tagline: "Pattern · Design · Creativity · Lifestyle",
+  lines: {
+    label: "Surface",
+    all: "All surfaces",
+    wallpaper: "Wallpaper",
+    fabric: "Fabric",
+    paint: "Paint",
+    clothing: "Clothing",
+    wallpaperMeta: "Exclusive designs for wallpaper",
+    fabricMeta: "Print designs for fabric & textiles",
+    paintMeta: "Colourways & colour designs for walls and surfaces",
+    clothingMeta: "Print designs for clothing & accessories",
+  },
   nav: {
     patterns: "Patterns",
     products: "Shop",
@@ -380,11 +410,13 @@ const en: Dict = {
     license: "License",
     digital: "Digital",
     physical: "Physical",
+    designs: "designs",
     dpi: "Resolution",
     repeat: "Repeat",
     formats: "Formats",
+    finish: "Finish",
     inLibrary: "In your library",
-    licenseNote: "Commercial license for wallpaper, textile and decorative product printing.",
+    licenseNote: "Commercial license for wallpaper, fabric, paint & clothing printing.",
   },
   home: {
     heroEyebrow: "Pattern & design studio",
@@ -400,6 +432,9 @@ const en: Dict = {
     discoveryEyebrow: "Pattern discovery",
     discoveryTitle: "A living library of surface and motif",
     discoveryDesc: "Every pattern with technical specs, its designer and a commercial license. For wallpaper, textile and product.",
+    surfacesEyebrow: "Four surfaces · one language",
+    surfacesTitle: "From wall to fabric & fashion",
+    surfacesDesc: "Motifs aren't just for walls — see the same design language in wallpaper, fabric, paint and clothing, each with its own specs and license.",
     trendingTitle: "Trending patterns",
     trendingDesc: "Most viewed and saved this week.",
     bestTitle: "Best sellers",
